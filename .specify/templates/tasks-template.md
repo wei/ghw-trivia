@@ -8,9 +8,11 @@ description: "Task list template for feature implementation"
 **Input**: Design documents from `/specs/[###-feature-name]/`
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
 
-**Tests**: The examples below include test tasks. Tests are OPTIONAL - only include them if explicitly requested in the feature specification.
+**Tests**: Per GHW Trivia constitution, this project uses MANUAL VERIFICATION ONLY. No automated test tasks will be included.
 
-**Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
+**Code Quality**: All tasks must adhere to constitutional principles (clean code, UX consistency, demo-readiness).
+
+**Organization**: Tasks are grouped by user story to enable independent implementation and manual verification of each story.
 
 ## Format: `[ID] [P?] [Story] Description`
 
@@ -37,8 +39,11 @@ description: "Task list template for feature implementation"
   
   Tasks MUST be organized by user story so each story can be:
   - Implemented independently
-  - Tested independently
+  - Manually verified independently
   - Delivered as an MVP increment
+  
+  NO AUTOMATED TEST TASKS: Per constitution, this project uses manual verification.
+  Focus on code quality gates (linting, formatting, code review) instead.
   
   DO NOT keep these sample tasks in the generated tasks.md file.
   ============================================================================
@@ -49,8 +54,12 @@ description: "Task list template for feature implementation"
 **Purpose**: Project initialization and basic structure
 
 - [ ] T001 Create project structure per implementation plan
-- [ ] T002 Initialize [language] project with [framework] dependencies
-- [ ] T003 [P] Configure linting and formatting tools
+- [ ] T002 Initialize FastAPI project with dependencies (fastapi, pydantic, uvicorn)
+- [ ] T003 [P] Configure linting and formatting tools (constitution requirement)
+- [ ] T004 [P] Setup code quality pre-commit hooks
+- [ ] T005 [P] Configure OpenAPI/Swagger documentation generation
+- [ ] T006 Create base FastAPI app with OpenAPI info (title, description, version)
+- [ ] T007 Setup OpenAPI response models and error schemas
 
 ---
 
@@ -62,12 +71,19 @@ description: "Task list template for feature implementation"
 
 Examples of foundational tasks (adjust based on your project):
 
-- [ ] T004 Setup database schema and migrations framework
-- [ ] T005 [P] Implement authentication/authorization framework
-- [ ] T006 [P] Setup API routing and middleware structure
-- [ ] T007 Create base models/entities that all stories depend on
-- [ ] T008 Configure error handling and logging infrastructure
-- [ ] T009 Setup environment configuration management
+- [ ] T008 Setup database schema and migrations framework
+- [ ] T009 [P] Implement authentication/authorization framework
+- [ ] T010 [P] Setup API routing and middleware structure (FastAPI routers)
+- [ ] T011 Create base models/entities that all stories depend on
+- [ ] T012 Configure error handling and logging infrastructure
+- [ ] T013 Setup environment configuration management
+- [ ] T014 [P] Define UX design system (colors, typography, spacing - per constitution)
+- [ ] T015 [P] Create reusable UI components for consistent UX
+- [ ] T016 Prepare realistic demo/mock data
+- [ ] T017 [P] Define common Pydantic schemas for request/response (OpenAPI)
+- [ ] T018 Create error response schemas (400, 404, 500, etc. with OpenAPI docs)
+
+**Code Quality Gate**: Run linting/formatting checks before proceeding
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -77,25 +93,41 @@ Examples of foundational tasks (adjust based on your project):
 
 **Goal**: [Brief description of what this story delivers]
 
-**Independent Test**: [How to verify this story works on its own]
-
-### Tests for User Story 1 (OPTIONAL - only if tests requested) ⚠️
-
-> **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
-
-- [ ] T010 [P] [US1] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T011 [P] [US1] Integration test for [user journey] in tests/integration/test_[name].py
+**Manual Verification Plan**: [How to manually verify this story works - specific steps]
 
 ### Implementation for User Story 1
 
-- [ ] T012 [P] [US1] Create [Entity1] model in src/models/[entity1].py
-- [ ] T013 [P] [US1] Create [Entity2] model in src/models/[entity2].py
-- [ ] T014 [US1] Implement [Service] in src/services/[service].py (depends on T012, T013)
-- [ ] T015 [US1] Implement [endpoint/feature] in src/[location]/[file].py
-- [ ] T016 [US1] Add validation and error handling
-- [ ] T017 [US1] Add logging for user story 1 operations
+- [ ] T019 [P] [US1] Create [Entity1] model in src/models/[entity1].py
+- [ ] T020 [P] [US1] Create [Entity2] model in src/models/[entity2].py
+- [ ] T021 [US1] Implement [Service] in src/services/[service].py (depends on T019, T020)
+- [ ] T022 [US1] Implement [endpoint] in src/api/endpoints/[endpoint].py with OpenAPI decorators
+- [ ] T023 [P] [US1] Define Pydantic request/response models in src/schemas/[entity].py
+- [ ] T024 [US1] Add OpenAPI operationId, summary, description for all endpoints
+- [ ] T025 [US1] Add example values and constraints to Pydantic models
+- [ ] T026 [US1] Document error responses (400, 404, 500) with OpenAPI status codes
+- [ ] T027 [US1] Add validation and user-friendly error handling
+- [ ] T028 [US1] Add logging for user story 1 operations
+- [ ] T029 [P] [US1] Implement UI components with consistent design system
+- [ ] T030 [US1] Add loading states and user feedback mechanisms
+- [ ] T031 [US1] Implement accessibility features (ARIA, keyboard nav)
+- [ ] T032 [US1] Verify OpenAPI docs auto-generated at /docs endpoint
+- [ ] T033 [US1] Update quickstart.md with API usage examples and demo instructions
 
-**Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
+**Code Quality Gate**: 
+- [ ] Run linting/formatting checks
+- [ ] Code review for naming conventions, no magic numbers
+- [ ] Verify UX consistency with design system
+- [ ] Verify OpenAPI documentation is complete and accurate
+
+**Manual Verification Checkpoint**: 
+- [ ] Demo User Story 1 following verification plan
+- [ ] Test all endpoints via Swagger UI at /docs
+- [ ] Verify user feedback is clear and immediate
+- [ ] Check accessibility (keyboard, screen reader)
+- [ ] Test responsive design on target devices
+- [ ] Verify OpenAPI spec can be consumed by client generators
+
+**Checkpoint**: At this point, User Story 1 should be fully functional and demo-ready
 
 ---
 
@@ -103,19 +135,32 @@ Examples of foundational tasks (adjust based on your project):
 
 **Goal**: [Brief description of what this story delivers]
 
-**Independent Test**: [How to verify this story works on its own]
-
-### Tests for User Story 2 (OPTIONAL - only if tests requested) ⚠️
-
-- [ ] T018 [P] [US2] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T019 [P] [US2] Integration test for [user journey] in tests/integration/test_[name].py
+**Manual Verification Plan**: [How to manually verify this story works]
 
 ### Implementation for User Story 2
 
-- [ ] T020 [P] [US2] Create [Entity] model in src/models/[entity].py
-- [ ] T021 [US2] Implement [Service] in src/services/[service].py
-- [ ] T022 [US2] Implement [endpoint/feature] in src/[location]/[file].py
-- [ ] T023 [US2] Integrate with User Story 1 components (if needed)
+- [ ] T034 [P] [US2] Create [Entity] model in src/models/[entity].py
+- [ ] T035 [US2] Implement [Service] in src/services/[service].py
+- [ ] T036 [US2] Implement [endpoint] in src/api/endpoints/[endpoint].py with OpenAPI decorators
+- [ ] T037 [P] [US2] Define Pydantic request/response models in src/schemas/[entity].py
+- [ ] T038 [US2] Add OpenAPI operationId, summary, description, and examples
+- [ ] T039 [US2] Document error responses with proper HTTP status codes
+- [ ] T040 [US2] Integrate with User Story 1 components (if needed)
+- [ ] T041 [P] [US2] Implement UI with consistent patterns from US1
+- [ ] T042 [US2] Add error handling with clear user messaging
+- [ ] T043 [US2] Update quickstart.md with new demo scenarios and API examples
+
+**Code Quality Gate**: 
+- [ ] Run linting/formatting checks
+- [ ] Code review for code quality principles
+- [ ] Verify UX consistency across US1 and US2
+- [ ] Verify OpenAPI documentation is complete
+
+**Manual Verification Checkpoint**:
+- [ ] Demo User Story 2 independently
+- [ ] Test all endpoints via Swagger UI at /docs
+- [ ] Demo combined US1 + US2 flow
+- [ ] Verify consistent UX patterns
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 
@@ -125,18 +170,29 @@ Examples of foundational tasks (adjust based on your project):
 
 **Goal**: [Brief description of what this story delivers]
 
-**Independent Test**: [How to verify this story works on its own]
-
-### Tests for User Story 3 (OPTIONAL - only if tests requested) ⚠️
-
-- [ ] T024 [P] [US3] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T025 [P] [US3] Integration test for [user journey] in tests/integration/test_[name].py
+**Manual Verification Plan**: [How to manually verify this story works]
 
 ### Implementation for User Story 3
 
-- [ ] T026 [P] [US3] Create [Entity] model in src/models/[entity].py
-- [ ] T027 [US3] Implement [Service] in src/services/[service].py
-- [ ] T028 [US3] Implement [endpoint/feature] in src/[location]/[file].py
+- [ ] T044 [P] [US3] Create [Entity] model in src/models/[entity].py
+- [ ] T045 [US3] Implement [Service] in src/services/[service].py
+- [ ] T046 [US3] Implement [endpoint] in src/api/endpoints/[endpoint].py with OpenAPI decorators
+- [ ] T047 [P] [US3] Define Pydantic request/response models in src/schemas/[entity].py
+- [ ] T048 [US3] Add complete OpenAPI documentation and examples
+- [ ] T049 [P] [US3] Implement UI maintaining design consistency
+- [ ] T050 [US3] Update quickstart.md with complete demo flow
+
+**Code Quality Gate**: 
+- [ ] Run linting/formatting checks
+- [ ] Final code review for all quality principles
+- [ ] Verify complete UX consistency
+- [ ] Verify complete OpenAPI documentation
+
+**Manual Verification Checkpoint**:
+- [ ] Demo User Story 3 independently
+- [ ] Test all endpoints via Swagger UI
+- [ ] Demo complete application flow (all stories)
+- [ ] Verify all user feedback mechanisms work
 
 **Checkpoint**: All user stories should now be independently functional
 
@@ -150,12 +206,33 @@ Examples of foundational tasks (adjust based on your project):
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] TXXX [P] Documentation updates in docs/
-- [ ] TXXX Code cleanup and refactoring
-- [ ] TXXX Performance optimization across all stories
-- [ ] TXXX [P] Additional unit tests (if requested) in tests/unit/
+- [ ] TXXX [P] Final documentation updates in docs/
+- [ ] TXXX Code cleanup and refactoring (remove duplication, improve naming)
+- [ ] TXXX Performance optimization across all stories (verify <3s load, <500ms API, <200ms interactions)
 - [ ] TXXX Security hardening
-- [ ] TXXX Run quickstart.md validation
+- [ ] TXXX Final accessibility audit across all features
+- [ ] TXXX Generate and review complete OpenAPI spec (openapi.json or openapi.yaml)
+- [ ] TXXX Verify ReDoc documentation (alternative to Swagger UI)
+- [ ] TXXX Run complete quickstart.md validation
+- [ ] TXXX Prepare demo script for live presentation
+- [ ] TXXX Test demo scenario end-to-end with realistic data
+
+**Final Code Quality Gate**:
+- [ ] All linting/formatting rules pass
+- [ ] No commented-out code
+- [ ] All magic numbers replaced with constants
+- [ ] All error messages are user-friendly
+- [ ] Code review complete
+- [ ] All endpoints have complete OpenAPI documentation
+
+**Final Manual Verification**:
+- [ ] Complete demo run-through (time it)
+- [ ] Verify all user flows work smoothly
+- [ ] Check all error states show clear messages
+- [ ] Confirm consistent UX across entire app
+- [ ] Test deployment from scratch
+- [ ] Verify OpenAPI spec is accurate and complete
+- [ ] Test client generation from OpenAPI spec (if applicable)
 
 ---
 
@@ -178,10 +255,12 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Within Each User Story
 
-- Tests (if included) MUST be written and FAIL before implementation
 - Models before services
 - Services before endpoints
 - Core implementation before integration
+- UI components with design system consistency
+- Code quality gates before moving to verification
+- Manual verification before story completion
 - Story complete before moving to next priority
 
 ### Parallel Opportunities
@@ -189,8 +268,8 @@ Examples of foundational tasks (adjust based on your project):
 - All Setup tasks marked [P] can run in parallel
 - All Foundational tasks marked [P] can run in parallel (within Phase 2)
 - Once Foundational phase completes, all user stories can start in parallel (if team capacity allows)
-- All tests for a user story marked [P] can run in parallel
 - Models within a story marked [P] can run in parallel
+- UI components within a story marked [P] can run in parallel
 - Different user stories can be worked on in parallel by different team members
 
 ---
@@ -198,13 +277,13 @@ Examples of foundational tasks (adjust based on your project):
 ## Parallel Example: User Story 1
 
 ```bash
-# Launch all tests for User Story 1 together (if tests requested):
-Task: "Contract test for [endpoint] in tests/contract/test_[name].py"
-Task: "Integration test for [user journey] in tests/integration/test_[name].py"
-
 # Launch all models for User Story 1 together:
 Task: "Create [Entity1] model in src/models/[entity1].py"
 Task: "Create [Entity2] model in src/models/[entity2].py"
+
+# Launch all UI components for User Story 1 together:
+Task: "Implement UI components with consistent design system"
+Task: "Add loading states and user feedback mechanisms"
 ```
 
 ---
@@ -216,15 +295,15 @@ Task: "Create [Entity2] model in src/models/[entity2].py"
 1. Complete Phase 1: Setup
 2. Complete Phase 2: Foundational (CRITICAL - blocks all stories)
 3. Complete Phase 3: User Story 1
-4. **STOP and VALIDATE**: Test User Story 1 independently
+4. **STOP and VALIDATE**: Manually verify User Story 1 following demo plan
 5. Deploy/demo if ready
 
 ### Incremental Delivery
 
 1. Complete Setup + Foundational → Foundation ready
-2. Add User Story 1 → Test independently → Deploy/Demo (MVP!)
-3. Add User Story 2 → Test independently → Deploy/Demo
-4. Add User Story 3 → Test independently → Deploy/Demo
+2. Add User Story 1 → Manually verify independently → Deploy/Demo (MVP!)
+3. Add User Story 2 → Manually verify independently → Deploy/Demo
+4. Add User Story 3 → Manually verify independently → Deploy/Demo
 5. Each story adds value without breaking previous stories
 
 ### Parallel Team Strategy
@@ -244,8 +323,9 @@ With multiple developers:
 
 - [P] tasks = different files, no dependencies
 - [Story] label maps task to specific user story for traceability
-- Each user story should be independently completable and testable
-- Verify tests fail before implementing
+- Each user story should be independently completable and manually verifiable
+- Code quality gates (linting/formatting) at each checkpoint
+- Manual verification required before story completion
 - Commit after each task or logical group
-- Stop at any checkpoint to validate story independently
+- Stop at any checkpoint to validate story independently via demo
 - Avoid: vague tasks, same file conflicts, cross-story dependencies that break independence

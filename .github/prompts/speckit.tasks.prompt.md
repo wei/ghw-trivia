@@ -22,13 +22,14 @@ You **MUST** consider the user input before proceeding (if not empty).
 3. **Execute task generation workflow**:
    - Load plan.md and extract tech stack, libraries, project structure
    - Load spec.md and extract user stories with their priorities (P1, P2, P3, etc.)
+   - **IMPORTANT**: If API endpoints exist in spec or contracts, generate OpenAPI documentation tasks for each
    - If data-model.md exists: Extract entities and map to user stories
-   - If contracts/ exists: Map endpoints to user stories
+   - If contracts/ exists: Map endpoints to user stories AND create OpenAPI/Pydantic schema tasks
    - If research.md exists: Extract decisions for setup tasks
    - Generate tasks organized by user story (see Task Generation Rules below)
    - Generate dependency graph showing user story completion order
    - Create parallel execution examples per user story
-   - Validate task completeness (each user story has all needed tasks, independently testable)
+   - Validate task completeness (each user story has all needed tasks, independently verifiable)
 
 4. **Generate tasks.md**: Use `.specify.specify/templates/tasks-template.md` as structure, fill with:
    - Correct feature name from plan.md
@@ -57,9 +58,9 @@ The tasks.md should be immediately executable - each task must be specific enoug
 
 ## Task Generation Rules
 
-**CRITICAL**: Tasks MUST be organized by user story to enable independent implementation and testing.
+**CRITICAL**: Tasks MUST be organized by user story to enable independent implementation and manual verification.
 
-**Tests are OPTIONAL**: Only generate test tasks if explicitly requested in the feature specification or if user requests TDD approach.
+**Testing Approach**: Per GHW Trivia constitution, this project uses MANUAL VERIFICATION ONLY (no automated tests). Tasks must include manual verification checkpoints instead of test tasks.
 
 ### Checklist Format (REQUIRED)
 
@@ -101,28 +102,45 @@ Every task MUST strictly follow this format:
      - Models needed for that story
      - Services needed for that story
      - Endpoints/UI needed for that story
-     - If tests requested: Tests specific to that story
+     - Manual verification checkpoints for that story
+     - Code quality gates (linting, formatting) for that story
    - Mark story dependencies (most stories should be independent)
 
 2. **From Contracts**:
    - Map each contract/endpoint → to the user story it serves
-   - If tests requested: Each contract → contract test task [P] before implementation in that story's phase
+   - Each endpoint MUST have OpenAPI documentation task:
+     - Define Pydantic request/response models in src/schemas/
+     - Add OpenAPI decorators (operationId, summary, description)
+     - Add example values and constraints to models
+     - Document error responses with proper HTTP status codes
+   - No test tasks (per constitution)
 
 3. **From Data Model**:
    - Map each entity to the user story(ies) that need it
    - If entity serves multiple stories: Put in earliest story or Setup phase
    - Relationships → service layer tasks in appropriate story phase
+   - Pydantic models for entities should include schema examples (for OpenAPI)
 
 4. **From Setup/Infrastructure**:
    - Shared infrastructure → Setup phase (Phase 1)
    - Foundational/blocking tasks → Foundational phase (Phase 2)
    - Story-specific setup → within that story's phase
+   - Include code quality tooling (linting, formatting) in Setup phase
+   - Include FastAPI app initialization and OpenAPI configuration in Setup phase
 
 ### Phase Structure
 
-- **Phase 1**: Setup (project initialization)
+- **Phase 1**: Setup (project initialization, code quality tools, FastAPI initialization)
+  - FastAPI app creation with OpenAPI info (title, description, version)
+  - Configure Swagger UI at /docs endpoint
+  - Setup Pydantic base models
 - **Phase 2**: Foundational (blocking prerequisites - MUST complete before user stories)
+  - Include UX design system setup (per constitution)
+  - Include demo data preparation
+  - Define common Pydantic schemas and error response models
 - **Phase 3+**: User Stories in priority order (P1, P2, P3...)
-  - Within each story: Tests (if requested) → Models → Services → Endpoints → Integration
-  - Each phase should be a complete, independently testable increment
-- **Final Phase**: Polish & Cross-Cutting Concerns
+  - Within each story: Models → Pydantic Schemas → Services → Endpoints with OpenAPI decorators → Manual Verification
+  - Each endpoint must have complete OpenAPI documentation with examples
+  - Code quality gates before verification checkpoints
+  - Each phase should be a complete, independently verifiable increment
+- **Final Phase**: Polish & Cross-Cutting Concerns (final code review, OpenAPI spec generation, demo preparation)

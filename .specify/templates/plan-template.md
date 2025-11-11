@@ -18,20 +18,57 @@
 -->
 
 **Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
-**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
+**Primary Dependencies**: FastAPI (REQUIRED for Python backend), [additional dependencies or N/A]  
 **Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
-**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
+**Testing**: N/A (manual verification only - per constitution)  
 **Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
 **Project Type**: [single/web/mobile - determines source structure]  
-**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
-**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
-**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
+**Performance Goals**: Page load <3s, API responses <500ms, interactions <200ms (per constitution)  
+**Constraints**: [domain-specific, e.g., demo-ready, mobile-responsive, OpenAPI-compliant or NEEDS CLARIFICATION]  
+**Scale/Scope**: [domain-specific, e.g., demo scenarios, expected user count or NEEDS CLARIFICATION]
 
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+**I. Code Quality First:**
+- [ ] Code uses clear, self-documenting names (no generic vars like `x`, `temp`, `data`)
+- [ ] Complex logic has explanatory comments
+- [ ] No magic numbers (all constants named)
+- [ ] Functions follow single responsibility principle
+- [ ] Code duplication eliminated
+- [ ] Error handling is explicit with user-friendly messages
+- [ ] No commented-out code
+- [ ] Linting/formatting rules configured
+
+**II. User Experience Consistency:**
+- [ ] Visual design system defined (colors, typography, spacing)
+- [ ] Interaction patterns documented and consistent
+- [ ] User feedback mechanisms identified (loading, success, errors)
+- [ ] Navigation flow is intuitive
+- [ ] Terminology is consistent across UI
+- [ ] Responsive design strategy defined
+- [ ] Accessibility requirements specified (ARIA, keyboard, contrast)
+
+**III. Rapid Development for Live Demos:**
+- [ ] Feature can be demo'd independently
+- [ ] No formal testing infrastructure required
+- [ ] Environment configuration externalized
+- [ ] Mock/demo data prepared and realistic
+- [ ] Demo scenario scripted
+- [ ] Deployment is single-command or automated
+- [ ] Dependencies are minimal and stable
+- [ ] Quickstart guide will be updated
+
+**IV. OpenAPI-First API Design:**
+- [ ] FastAPI framework selected for Python backends
+- [ ] All endpoints have OpenAPI operationId, summary, description
+- [ ] Request/response schemas defined with Pydantic models
+- [ ] Example values included in schema definitions
+- [ ] Error responses documented with proper HTTP status codes
+- [ ] OpenAPI spec accessible at /openapi.json
+- [ ] Interactive API docs (Swagger UI) available
+- [ ] Complex parameters documented with constraints
 
 ## Project Structure
 
