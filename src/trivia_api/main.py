@@ -2,9 +2,11 @@
 import logging
 from contextlib import asynccontextmanager
 
+
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from trivia_api.config import get_settings
 from trivia_api.database import Base, engine
@@ -37,6 +39,15 @@ app = FastAPI(
     description="REST API for managing trivia question sessions, user answers, and leaderboard rankings",
     version="1.0.0",
     lifespan=lifespan,
+)
+
+# Enable CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Adjust as needed for production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
