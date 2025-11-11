@@ -316,6 +316,7 @@ paths:
                 status: success
                 message: "Trivia session ended"
                 correct_answer: "Paris"
+                successful_attempts: ["john_doe", "alice_smith"]
         '400':
           description: Bad request - no active session
           content:
@@ -558,6 +559,7 @@ components:
         - status
         - message
         - correct_answer
+        - successful_attempts
       properties:
         status:
           type: string
@@ -570,6 +572,12 @@ components:
           type: string
           description: The correct answer now revealed
           example: "Paris"
+        successful_attempts:
+          type: array
+          description: List of usernames who answered correctly in this session
+          items:
+            type: string
+          example: ["john_doe", "alice_smith"]
 
     ErrorResponse:
       type: object

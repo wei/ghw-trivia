@@ -377,7 +377,8 @@ curl -X GET http://localhost:8000/api/trivia/leaderboard
 {
   "status": "success",
   "message": "Trivia session ended",
-  "correct_answer": "Paris"
+  "correct_answer": "Paris",
+  "successful_attempts": ["john_doe", "alice_smith"]
 }
 ```
 
