@@ -291,7 +291,7 @@ curl -X POST http://localhost:8000/api/trivia/answer \
 
 **Summary**: Retrieve list of all answer attempts for current session
 
-**Description**: Returns complete history of answer submissions with timestamps, usernames, and correctness status. Ordered chronologically.
+**Description**: Returns complete history of answer submissions with timestamps, usernames, and correctness status. Ordered chronologically. Answer text is not included in the response.
 
 **Request**:
 - **Query Parameters**: None
@@ -303,13 +303,11 @@ curl -X POST http://localhost:8000/api/trivia/answer \
   "attempts": [
     {
       "username": "john_doe",
-      "answer": "Paris",
       "is_correct": true,
       "timestamp": "2025-11-11T14:30:45Z"
     },
     {
       "username": "jane_smith",
-      "answer": "London",
       "is_correct": false,
       "timestamp": "2025-11-11T14:31:20Z"
     }
