@@ -1,0 +1,63 @@
+[project]
+name = "trivia-api"
+version = "1.0.0"
+description = "REST API for managing trivia question sessions, user answers, and leaderboard rankings"
+authors = [{name = "Trivia API Team"}]
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi==0.104.1",
+    "uvicorn[standard]==0.24.0",
+    "sqlalchemy==2.0.23",
+    "pydantic==2.5.0",
+    "pydantic-settings==2.1.0",
+    "alembic==1.13.0",
+    "python-dotenv==1.0.0",
+]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.black]
+line-length = 100
+target-version = ['py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "C",    # flake8-comprehensions
+    "B",    # flake8-bugbear
+]
+ignore = [
+    "E501",  # line too long, handled by black
+    "B008",  # do not perform function calls in argument defaults
+]
+exclude = [
+    ".git",
+    "build",
+    "dist",
+    ".venv",
+    "__pycache__",
+]
+
+[tool.ruff.isort]
+known-first-party = ["trivia_api"]
