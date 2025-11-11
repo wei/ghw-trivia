@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: User description: "Trivia API: Admin should be able to start a new trivia question session. Users should be able to retrieve the current trivia question. Users should be able to retrieve a list of all attempts (date/time, username, correct/incorrect of the answer). Users should be able to submit an answer to the current trivia question with their username, and get back correct/incorrect feedback. If correct, their score should be incremented by 1 and future attempts for that question should be rejected. Admin should be able to end the current trivia question session and the answer shall be revealed. Users should be able to view a leaderboard of top scorers. Answer should be case insensitive."
 
-## User Scenarios & UX Flow *(mandatory)*
+## User Scenarios & API Flows *(mandatory)*
 
 ### User Story 1 - Admin Starts Trivia Session (Priority: P1)
 
@@ -15,15 +15,10 @@ An admin starts a new trivia question session by providing a question and its co
 
 **Independent Demo**: Can be fully demoed by an admin calling the start-session endpoint with a question and answer, and verifying the system accepts the submission and marks the session as active.
 
-**UX Requirements**:
-- Visual design: Admin interface for entering question and answer
-- User feedback: Confirmation message showing session started with question visible
-- Accessibility: Form labels for all input fields, keyboard navigation
+**Acceptance Scenarios** (API verification):
 
-**Acceptance Scenarios** (manual verification):
-
-1. **Given** no active trivia session exists, **When** admin provides a question and correct answer, **Then** system confirms session started and the question becomes available to users
-2. **Given** an active session exists, **When** admin attempts to start a new session, **Then** system rejects the request with clear message (session already active)
+1. **Given** no active trivia session exists, **When** admin calls POST /api/trivia/session/start with question and correct_answer, **Then** system returns 200 with session_id and question is available to users
+2. **Given** an active session exists, **When** admin calls POST /api/trivia/session/start, **Then** system returns 400 "A trivia session is already active"
 
 ---
 
@@ -33,17 +28,12 @@ Any user can retrieve the currently active trivia question to attempt answering 
 
 **Why this priority**: Users need immediate access to the question to participate. This is a core user-facing feature required before answering.
 
-**Independent Demo**: Can be fully demoed by any user calling the get-current-question endpoint and seeing the active question displayed.
+**Independent Demo**: Can be fully demoed by any user calling the get-current-question endpoint and receiving the active question.
 
-**UX Requirements**:
-- Visual design: Clear display of question text, readable formatting
-- User feedback: Indicates whether a session is active or no question available
-- Accessibility: Question text is readable by screen readers, sufficient contrast
+**Acceptance Scenarios** (API verification):
 
-**Acceptance Scenarios** (manual verification):
-
-1. **Given** an active trivia session exists, **When** user requests current question, **Then** user receives question text
-2. **Given** no active session exists, **When** user requests current question, **Then** user receives message indicating no active session
+1. **Given** an active trivia session exists, **When** user calls GET /api/trivia/question, **Then** system returns 200 with question text and session_id
+2. **Given** no active session exists, **When** user calls GET /api/trivia/question, **Then** system returns 200 with null question and message "No active trivia session"
 
 ---
 
@@ -53,20 +43,14 @@ User submits their username and an answer to the current question, receives imme
 
 **Why this priority**: This is the core interactive feature - users need to participate and receive feedback. It directly delivers business value through engagement.
 
-**Independent Demo**: Can be fully demoed by user submitting an answer and seeing feedback, then verifying score changes or rejection on second attempt.
+**Independent Demo**: Can be fully demoed by user submitting an answer and receiving feedback via API response, then verifying score changes or rejection on second attempt.
 
-**UX Requirements**:
-- Visual design: Clear form for entering username and answer, prominent feedback message
-- User feedback: Immediate feedback showing "Correct!" or "Incorrect!" with visual distinction (color, icon)
-- Error messaging: "You have already answered this question" when attempting duplicate
-- Accessibility: Form labels, error announcements for screen readers
+**Acceptance Scenarios** (API verification):
 
-**Acceptance Scenarios** (manual verification):
-
-1. **Given** user has not yet answered current question, **When** user submits correct answer with username, **Then** system confirms "Correct!" and increments their score by 1
-2. **Given** user has not yet answered current question, **When** user submits incorrect answer with username, **Then** system confirms "Incorrect!" and score remains unchanged
-3. **Given** user has already answered current question correctly, **When** user attempts to submit another answer, **Then** system rejects with message "You have already answered this question"
-4. **Given** answer submission with any case variation, **When** compared to correct answer, **Then** match is case-insensitive (e.g., "Paris", "paris", "PARIS" all match)
+1. **Given** user has not yet answered current question, **When** user calls POST /api/trivia/answer with correct answer, **Then** system returns 200 with is_correct: true and incremented score
+2. **Given** user has not yet answered current question, **When** user calls POST /api/trivia/answer with incorrect answer, **Then** system returns 200 with is_correct: false
+3. **Given** user has already answered current question, **When** user calls POST /api/trivia/answer again, **Then** system returns 400 "You have already answered this question"
+4. **Given** answer submission with case variation "PARIS", **When** compared to correct answer "paris", **Then** system returns is_correct: true
 
 ---
 
@@ -76,60 +60,45 @@ User can retrieve a list of all previous answer attempts showing date/time, user
 
 **Why this priority**: This provides transparency and accountability for the trivia session. Users can review their participation history. Important for engagement but not required for basic participation.
 
-**Independent Demo**: Can be fully demoed by retrieving attempts list and verifying entries show timestamps, usernames, and correctness status.
+**Independent Demo**: Can be fully demoed by calling the attempts endpoint and verifying entries contain timestamps, usernames, and correctness status.
 
-**UX Requirements**:
-- Visual design: Table or list showing attempts chronologically, clear correct/incorrect indicators
-- User feedback: Indicates when no attempts exist yet
-- Accessibility: Table headers properly marked, status clearly indicated for screen readers
+**Acceptance Scenarios** (API verification):
 
-**Acceptance Scenarios** (manual verification):
-
-1. **Given** trivia session with multiple answer submissions, **When** user requests all attempts, **Then** system returns complete list with timestamps, usernames, and correct/incorrect status
-2. **Given** attempts made at different times, **When** user views list, **Then** attempts are ordered chronologically (most recent first)
-3. **Given** no attempts have been made, **When** user requests attempts list, **Then** system indicates "No attempts yet"
+1. **Given** trivia session with multiple answer submissions, **When** user calls GET /api/trivia/attempts, **Then** system returns 200 with list containing all attempts with timestamps, usernames, and is_correct values
+2. **Given** attempts made at different times, **When** user calls GET /api/trivia/attempts, **Then** attempts are ordered chronologically (most recent first)
+3. **Given** no attempts have been made, **When** user calls GET /api/trivia/attempts, **Then** system returns 200 with empty attempts list
 
 ---
 
 ### User Story 5 - User Views Leaderboard (Priority: P2)
 
-User can view a leaderboard displaying top scorers ranked by their cumulative score from correct answers across all trivia sessions.
+User can retrieve a leaderboard displaying top scorers ranked by their cumulative score across all trivia sessions.
 
 **Why this priority**: Leaderboard drives engagement and friendly competition. Important for user motivation and retention but not essential to participate.
 
-**Independent Demo**: Can be fully demoed by viewing leaderboard and verifying rankings reflect scores from submitted answers.
+**Independent Demo**: Can be fully demoed by calling the leaderboard endpoint and verifying rankings reflect cumulative scores from all sessions.
 
-**UX Requirements**:
-- Visual design: Ranked list showing position, username, and score; highlight top scorers (gold/silver/bronze styling)
-- User feedback: Clear ranking position, visual distinction for different tiers
-- Accessibility: Rankings clearly announced for screen readers, logical tab order
+**Acceptance Scenarios** (API verification):
 
-**Acceptance Scenarios** (manual verification):
-
-1. **Given** multiple users with different scores, **When** user requests leaderboard, **Then** users are ranked by score in descending order
-2. **Given** users with identical scores, **When** they appear on leaderboard, **Then** they are ordered by earliest submission time (tie-breaking)
-3. **Given** no scores yet, **When** user views leaderboard, **Then** leaderboard is empty with message "No scores yet"
+1. **Given** multiple users with different cumulative scores across all sessions, **When** user calls GET /api/trivia/leaderboard, **Then** system returns 200 with users ranked by score in descending order
+2. **Given** users with identical cumulative scores, **When** user calls GET /api/trivia/leaderboard, **Then** users with same score are ordered by earliest score acquisition timestamp (tie-breaking)
+3. **Given** no users with scores, **When** user calls GET /api/trivia/leaderboard, **Then** system returns 200 with empty leaderboard
 
 ---
 
 ### User Story 6 - Admin Ends Session and Reveals Answer (Priority: P2)
 
-Admin can end the current trivia session, which prevents further answer submissions and reveals the correct answer to all users.
+Admin can end the current trivia session, which prevents further answer submissions and reveals the correct answer.
 
 **Why this priority**: Essential for closing out trivia rounds and preparing for next questions. Moderator control is important but only needed after participation phase.
 
-**Independent Demo**: Can be fully demoed by admin ending session, verifying no new answers accepted, and correct answer becomes visible to users.
+**Independent Demo**: Can be fully demoed by admin calling the end-session endpoint, verifying no new answers are accepted, and correct answer is returned in API response.
 
-**UX Requirements**:
-- Visual design: Admin button to end session with confirmation dialog
-- User feedback: Clear confirmation that session has ended, correct answer prominently displayed
-- Accessibility: Confirmation dialog properly labeled and navigable
+**Acceptance Scenarios** (API verification):
 
-**Acceptance Scenarios** (manual verification):
-
-1. **Given** active trivia session, **When** admin ends session, **Then** system closes session and reveals correct answer
-2. **Given** session has been ended, **When** user attempts to submit an answer, **Then** system rejects with message "Session has ended"
-3. **Given** session ended, **When** any user views current question, **Then** correct answer is displayed alongside question
+1. **Given** active trivia session, **When** admin calls POST /api/trivia/session/end, **Then** system returns 200 with correct_answer and session is closed
+2. **Given** session has been ended, **When** user calls POST /api/trivia/answer, **Then** system returns 400 "Session has ended"
+3. **Given** session ended, **When** any user calls GET /api/trivia/question, **Then** response includes the correct_answer field
 
 ---
 
@@ -153,22 +122,22 @@ Admin can end the current trivia session, which prevents further answer submissi
 - **FR-005**: Users MUST be able to submit an answer with their username to the current question
 - **FR-006**: System MUST provide immediate feedback (correct/incorrect) for each answer submission
 - **FR-007**: System MUST perform case-insensitive comparison of submitted answers against correct answer
-- **FR-008**: System MUST increment user's score by 1 when they submit a correct answer
-- **FR-009**: System MUST prevent same user from submitting additional answers to the same question
-- **FR-010**: System MUST record all answer attempts with timestamp, username, and correctness status
+- **FR-008**: System MUST increment user's cumulative score by 1 when they submit a correct answer to any question
+- **FR-009**: System MUST prevent same user from submitting additional answers to the same question in the same session
+- **FR-010**: System MUST record all answer attempts with timestamp, username, session_id, and correctness status
 - **FR-011**: Users MUST be able to retrieve complete history of all answer attempts with timestamps, usernames, and correctness
-- **FR-012**: Users MUST be able to retrieve leaderboard showing users ranked by score in descending order
-- **FR-013**: System MUST use earliest submission time as tie-breaker for users with identical scores
+- **FR-012**: Users MUST be able to retrieve leaderboard showing users ranked by cumulative score across all sessions in descending order
+- **FR-013**: System MUST use earliest score acquisition timestamp as tie-breaker for users with identical cumulative scores
 - **FR-014**: Admin MUST be able to end current trivia session
 - **FR-015**: System MUST prevent answer submissions after session is ended
-- **FR-016**: System MUST reveal correct answer to all users when session is ended
+- **FR-016**: System MUST reveal correct answer when session is ended
 - **FR-017**: System MUST handle concurrent user submissions without data loss or corruption
 
 ### Key Entities
 
-- **Trivia Session**: Represents the current active question period with question text, correct answer, start time, end time, and status (active/ended)
-- **Answer Attempt**: Records user's submission containing username, submitted answer text, timestamp, and correctness status
-- **User Score**: Maintains aggregate score per username across all correct answers in current session
+- **Trivia Session**: Represents an active or ended question period with question text, correct answer, start time, end time, and status (active/ended)
+- **Answer Attempt**: Records user's submission containing username, submitted answer text, timestamp, associated session_id, and correctness status
+- **User Score**: Maintains aggregate cumulative score per username across all trivia sessions (cumulative total of all correct answers)
 
 ## API Contract *(mandatory if feature involves endpoints)*
 
@@ -220,19 +189,30 @@ curl -X POST http://localhost:8000/api/trivia/session/start \
 
 **Summary**: Retrieve the current active trivia question
 
-**Description**: Returns the question text of the currently active trivia session. Does not reveal the correct answer until session is ended.
+**Description**: Returns the question text of the currently active or most recently ended trivia session. Does not reveal the correct answer until session is ended. After a session ends, the correct answer is included in the response.
 
 **Request**:
 - **Path Parameters**: None
 - **Query Parameters**: None
 
-**Response** (HTTP 200 Success):
+**Response** (HTTP 200 Success - Active Session):
 ```json
 {
   "status": "success",
   "question": "What is the capital of France?",
   "session_id": "session_123",
   "is_active": true
+}
+```
+
+**Response** (HTTP 200 Success - Ended Session with Answer Revealed):
+```json
+{
+  "status": "success",
+  "question": "What is the capital of France?",
+  "session_id": "session_123",
+  "is_active": false,
+  "correct_answer": "Paris"
 }
 ```
 
@@ -349,9 +329,9 @@ curl -X GET http://localhost:8000/api/trivia/attempts
 
 ### Endpoint 5: [GET] /api/trivia/leaderboard - Get Leaderboard
 
-**Summary**: Retrieve ranked leaderboard of top scorers
+**Summary**: Retrieve ranked leaderboard of top scorers across all sessions
 
-**Description**: Returns users ranked by score in descending order. Users with identical scores are ordered by earliest submission time.
+**Description**: Returns users ranked by their cumulative score in descending order, combining scores from all trivia sessions. Users with identical cumulative scores are ordered by earliest score acquisition time.
 
 **Request**:
 - **Query Parameters**: None
@@ -364,12 +344,12 @@ curl -X GET http://localhost:8000/api/trivia/attempts
     {
       "rank": 1,
       "username": "john_doe",
-      "score": 5
+      "score": 15
     },
     {
       "rank": 2,
       "username": "jane_smith",
-      "score": 3
+      "score": 12
     }
   ]
 }
@@ -441,11 +421,13 @@ curl -X POST http://localhost:8000/api/trivia/session/end \
 
 ## Assumptions
 
-- **Admin Context**: The system will have admin authentication/authorization in place. This specification assumes admin checks are performed by the calling service/middleware.
-- **Session Scope**: Trivia sessions are managed per-session basis. Only one session is active at a time.
-- **Score Persistence**: User scores are calculated per session and are not carried over between sessions.
+- **Admin Authentication**: Admin authentication is performed using an API key stored in `.env` environment file. Admin endpoints require this API key to be passed in request headers.
+- **Session Scope**: Trivia sessions are managed per-session basis. Only one session is active at a time. Previous sessions remain in history for scoring purposes.
+- **Score Persistence**: User scores are cumulative across all trivia sessions. Scores earned in one session contribute to the total score for leaderboard ranking.
 - **Username Format**: No specific validation on username format. Usernames are case-sensitive for identity but answers are case-insensitive.
+- **API-Only Implementation**: This is an API-only specification with no user interface elements. All interactions are performed via REST API endpoints.
 - **Concurrent Submissions**: System has adequate infrastructure to handle typical concurrent user loads (tested with 100+ simultaneous requests).
-- **Data Storage**: System stores all attempts and session data persistently for the duration of the session.
+- **Data Storage**: System uses SQLite for persistent data storage of all attempts, sessions, and user scores.
 - **Timestamp Format**: All timestamps use ISO 8601 format (UTC).
-- **First Attempt Wins**: For tie-breaking on leaderboard, users are ordered by earliest submission time (not by update time).
+- **Leaderboard Scope**: Leaderboard displays cumulative scores across all historical trivia sessions, not just the current session.
+- **Tie-Breaking**: For users with identical cumulative scores, ordering is by earliest score acquisition timestamp across all sessions.
